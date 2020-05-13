@@ -180,14 +180,18 @@ namespace mpl::demo {
                         }
                     }
                     
-                    if (getResponse)
+                    if (getResponse) {
                         kvsClient.get_async(solutionPathKey);
+                        JI_LOG(INFO) << "kvsClient.get_async(solutionPathKey) called.";
+                    }
+
                 }
                 
                 auto s = planner.solution();
                 if (s < solution) {
                     sendPath(&kvsClient, solutionPathKey, Clock::now() - start, s);
                     solution = s;
+                    JI_LOG(INFO) << "solution length = " << solution.cost();
                 }
                 return false;
             });
