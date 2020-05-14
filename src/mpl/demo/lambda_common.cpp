@@ -150,6 +150,7 @@ namespace mpl::demo {
                         getResponse = true;
                                                 
                         TopKPriorityLattice<double, string, kNumShortestPaths> top_k_priority_lattice = deserialize_top_k_priority(resp.tuples(0).payload());
+                        JI_LOG(WARN) << "TopK length in lambda_common = " << top_k_priority_lattice.reveal().size();
 
                         for (const auto& pv : top_k_priority_lattice.reveal()) {
                           Buffer buf(pv.value);
