@@ -1,6 +1,9 @@
 # 3.10 introduces C++ 17 support
 cmake_minimum_required (VERSION 3.11)
 project (mplambda)
+foreach(path ${CMAKE_PREFIX_PATH})
+  message("Path: " ${path})
+endforeach(path)
 
 # Enable C++17
 set(CMAKE_CXX_STANDARD 17)
@@ -85,7 +88,7 @@ else ()
     add_custom_target(update-function-code
         COMMAND aws lambda update-function-code --function-name mpl_lambda_aws_test --zip-file fileb://mpl_lambda_aws.zip)
 
-    #add_executable(mpl_lambda_invoke src/mpl_lambda_invoke.cpp)
+    add_executable(mpl_lambda_invoke src/mpl_lambda_invoke.cpp)
     target_link_libraries(mpl_lambda_invoke AWS::aws-lambda-runtime ${AWSSDK_LINK_LIBRARIES})
 
     #add_executable(mpl_coordinator src/mpl_coordinator.cpp src/mpl/write_queue.cpp)
