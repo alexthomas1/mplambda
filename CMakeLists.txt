@@ -91,7 +91,7 @@ else ()
     add_executable(mpl_lambda_invoke src/mpl_lambda_invoke.cpp)
     target_link_libraries(mpl_lambda_invoke AWS::aws-lambda-runtime ${AWSSDK_LINK_LIBRARIES})
 
-    #add_executable(mpl_coordinator src/mpl_coordinator.cpp src/mpl/write_queue.cpp)
+    add_executable(mpl_coordinator src/mpl_coordinator.cpp src/mpl/write_queue.cpp)
     target_link_libraries(mpl_coordinator Threads::Threads AWS::aws-lambda-runtime ${AWSSDK_LINK_LIBRARIES})
 
 endif()
