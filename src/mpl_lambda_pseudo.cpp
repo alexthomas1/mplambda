@@ -2,6 +2,7 @@
 #include <iostream>
 
 int main(int argc, char *argv[]) try {
+    JI_LOG(INFO) << "Hello";
     static const std::string resourceDirectory = "/mplambda/resources/";
     mpl::demo::AppOptions options(argc, argv);
 
