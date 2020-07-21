@@ -85,7 +85,7 @@ namespace jilog_impl {
         inline ~LogStream() {
             msg_ << '\n';
             std::clog << msg_.str();
-            std::cout << msg_.str();
+            std::cerr << msg_.str();
         }
 
         template <typename U>
