@@ -87,6 +87,7 @@ namespace mpl::demo {
         using State = typename Scenario::State;
         using Distance = typename Scenario::Distance;
 
+        JI_LOG(INFO) << "Start function runplanner";
         State qStart = options.start<State>();
 
 
@@ -101,7 +102,10 @@ namespace mpl::demo {
         std::cout << "anna address is " << options.anna_address_ << "\n";
         std::cout << "local ip is " << options.local_ip_ << "\n";
         std::cout << "execution id is " << options.execution_id_ << "\n";
+
+        JI_LOG(INFO) << "before kvsClient";
         KvsClient kvsClient(threads, ip, thread_id, 10000);
+        JI_LOG(INFO) << "After kvsclient";
 
         if (options.coordinator(false).empty()) {
             JI_LOG(WARN) << "no coordinator set";
@@ -124,10 +128,13 @@ namespace mpl::demo {
         // update, and to check if we should write out one last
         // solution.
         auto solution = planner.solution();
+        JI_LOG(INFO) << "judge whether found a solution";
         assert(!solution);
 
+        JI_LOG(INFO) << "found a solution";
         const std::string solutionPathKey = options.execution_id_;
 
+        JI_LOG(INFO) << "Sync solution key" << solutionPathKey;
         kvsClient.get_async(solutionPathKey);
 
         if constexpr (Algorithm::asymptotically_optimal) {                
