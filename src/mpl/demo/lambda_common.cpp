@@ -146,14 +146,14 @@ namespace mpl::demo {
                     return true;
                 std::vector<KeyResponse> responses = kvsClient.receive_async();
                 if (!responses.empty()) {
-                    //JI_LOG(INFO) << "processing " << responses.size() << " async responses";
+                    JI_LOG(INFO) << "processing " << responses.size() << " async responses";
                     bool getResponse = false;
                     for (KeyResponse& resp : responses) {
                         if (resp.type() == RequestType::PUT) {
-                            //JI_LOG(INFO) << "received PUT response for key " << resp.tuples(0).key() << " with error number " << resp.tuples(0).error();
+                            JI_LOG(INFO) << "received PUT response for key " << resp.tuples(0).key() << " with error number " << resp.tuples(0).error();
                             continue;
                         }
-                        //JI_LOG(INFO) << "received GET response for key " << resp.tuples(0).key() << " with error number " << resp.tuples(0).error();
+                        JI_LOG(INFO) << "received GET response for key " << resp.tuples(0).key() << " with error number " << resp.tuples(0).error();
                         getResponse = true;
                                                 
                         TopKPriorityLattice<double, string, kNumShortestPaths> top_k_priority_lattice = deserialize_top_k_priority(resp.tuples(0).payload());
@@ -196,6 +196,7 @@ namespace mpl::demo {
                 }
                 
                 auto s = planner.solution();
+                JI_LOG(INFO) << "Get solution with cost " << solution.cost();
                 if (s < solution) {
                     sendPath(&kvsClient, solutionPathKey, Clock::now() - start, s);
                     solution = s;
