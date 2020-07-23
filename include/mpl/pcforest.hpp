@@ -170,7 +170,7 @@ namespace mpl {
         }
 
         void addPath(Distance cost, const std::vector<State>& path) {
-            JI_LOG(WARN) << "ADDPATH CALLED with cost=" << cost << ", waypoints=" << path.size();
+            //JI_LOG(WARN) << "ADDPATH CALLED with cost=" << cost << ", waypoints=" << path.size();
 
             if (path.size() < 2) {
                 JI_LOG(WARN) << "addPath called with path that is too short";
