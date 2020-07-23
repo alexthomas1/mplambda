@@ -197,11 +197,12 @@ namespace mpl::demo {
                 
                 auto s = planner.solution();
                 //JI_LOG(INFO) << "Get solution with cost " << solution.cost();
-                JI_LOG(INFO) << "Get solution with cost " << solution.cost() << "," << (Clock::now() - start);
+                
                 if (s < solution) {
                     sendPath(&kvsClient, solutionPathKey, Clock::now() - start, s);
                     solution = s;
                     JI_LOG(INFO) << "solution length = " << solution.cost();
+                    JI_LOG(INFO) << "Get solution with cost " << solution.cost() << "," << (Clock::now() - start);
                 }
                 return false;
             });
