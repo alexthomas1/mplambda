@@ -157,16 +157,16 @@ namespace mpl::demo {
                         getResponse = true;
                                                 
                         TopKPriorityLattice<double, string, kNumShortestPaths> top_k_priority_lattice = deserialize_top_k_priority(resp.tuples(0).payload());
-                        JI_LOG(WARN) << "TopK length in lambda_common = " << top_k_priority_lattice.reveal().size();
+                        JI_LOG(WARN) << "TopK length = " << top_k_priority_lattice.reveal().size();
 
                         for (const auto& pv : top_k_priority_lattice.reveal()) {
-                            JI_LOG(WARN) << "with value " << pv.value;
+                          
                           Buffer buf(pv.value);
                           packet::parse(
                               buf,
                               [&] (auto&& path) {
                                   if constexpr (std::is_same_v<std::decay_t<decltype(path)>, packet::Path<State>>) {
-                                      
+                                    JI_LOG(WARN) << "with value " << path.cost();
                                       planner.addPath(path.cost(), path.path());
 
                                       // update our best solution if it has
