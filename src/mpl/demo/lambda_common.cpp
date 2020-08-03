@@ -7,6 +7,7 @@
 #include <mpl/option.hpp>
 #include <client/kvs_client.hpp>
 #include <getopt.h>
+#include <iostream>
 #include <optional>
 
 // these static variables are needed by Anna
@@ -171,7 +172,7 @@ namespace mpl::demo {
                               buf,
                               [&] (auto&& path) {
                                   if constexpr (std::is_same_v<std::decay_t<decltype(path)>, packet::Path<State>>) {
-                                    cerr  << path.cost() << ",";
+                                    std::cerr  << path.cost() << ",";
                                       planner.addPath(path.cost(), path.path());
 
                                       // update our best solution if it has
