@@ -145,6 +145,7 @@ namespace mpl::demo {
                 if (maxElapsedSolveTime.count() > 0 && Clock::now() - start > maxElapsedSolveTime)
                     return true;
                 std::vector<KeyResponse> responses = kvsClient.receive_async();
+                int currentTopKLength = -1;
                 if (!responses.empty()) {
                     //JI_LOG(INFO) << "processing " << responses.size() << " async responses";
                     bool getResponse = false;
@@ -157,7 +158,11 @@ namespace mpl::demo {
                         getResponse = true;
                                                 
                         TopKPriorityLattice<double, string, kNumShortestPaths> top_k_priority_lattice = deserialize_top_k_priority(resp.tuples(0).payload());
-                        JI_LOG(WARN) << "TopK length = " << top_k_priority_lattice.reveal().size();
+                        if(currentTopKLength !=  top_k_priority_lattice.reveal().size()){
+                            JI_LOG(WARN) << "TopK length = " <<  top_k_priority_lattice.reveal().size();
+                            currentTopKLength =  top_k_priority_lattice.reveal().size();
+                        }
+                        
 
                         for (const auto& pv : top_k_priority_lattice.reveal()) {
                           
@@ -166,7 +171,7 @@ namespace mpl::demo {
                               buf,
                               [&] (auto&& path) {
                                   if constexpr (std::is_same_v<std::decay_t<decltype(path)>, packet::Path<State>>) {
-                                    JI_LOG(WARN) << "with value " << path.cost();
+                                    cerr  << path.cost() << ",";
                                       planner.addPath(path.cost(), path.path());
 
                                       // update our best solution if it has
