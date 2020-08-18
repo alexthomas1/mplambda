@@ -160,7 +160,7 @@ namespace mpl::demo {
                                                 
                         TopKPriorityLattice<double, string, kNumShortestPaths> top_k_priority_lattice = deserialize_top_k_priority(resp.tuples(0).payload());
                         if(currentTopKLength !=  top_k_priority_lattice.reveal().size()){
-                            //JI_LOG(WARN) << "TopK length = " <<  top_k_priority_lattice.reveal().size();
+                            JI_LOG(WARN) << "TopK length = " <<  top_k_priority_lattice.reveal().size();
                             currentTopKLength =  top_k_priority_lattice.reveal().size();
                         }
                         
@@ -172,7 +172,7 @@ namespace mpl::demo {
                               buf,
                               [&] (auto&& path) {
                                   if constexpr (std::is_same_v<std::decay_t<decltype(path)>, packet::Path<State>>) {
-                                    //std::cerr  << path.cost() << ",";
+                                    std::cerr  << path.cost() << ",";
                                       planner.addPath(path.cost(), path.path());
 
                                       // update our best solution if it has
