@@ -177,9 +177,12 @@ namespace mpl::demo {
                                   if constexpr (std::is_same_v<std::decay_t<decltype(path)>, packet::Path<State>>) {
 				      double current_cost = path.cost();
 				      std::cerr  << current_cost << ",";
-				      if (added_paths.find(current_cost)  == added_paths.end() || added_paths[current_cost] != currentTopKLength){
+				      if (added_paths.find(current_cost)  == added_paths.end() || added_paths[current_cost] < 2){
 					planner.addPath(current_cost, path.path());
-					added_paths[current_cost] = currentTopKLength;
+					if (added_paths.find(current_cost)  == added_paths.end()){
+					  added_paths[current_cost] = 0;
+					}
+					added_paths[current_cost] += 1;
 					JI_LOG(INFO) << "added path with cost" << current_cost;
 				      }
 				      //else{
