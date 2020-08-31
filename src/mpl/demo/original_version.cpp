@@ -9,7 +9,6 @@
 #include <getopt.h>
 #include <iostream>
 #include <optional>
-#include <unordered_map> 
 
 // these static variables are needed by Anna
 ZmqUtil zmq_util;
@@ -139,8 +138,6 @@ namespace mpl::demo {
         JI_LOG(INFO) << "Sync solution key" << solutionPathKey;
         kvsClient.get_async(solutionPathKey);
 
-	std::unordered_map <double, int> added_paths; 
-	  
         if constexpr (Algorithm::asymptotically_optimal) {                
             // asymptotically-optimal planner, run for the
             // time-limit, and update the graph with best paths
@@ -175,19 +172,8 @@ namespace mpl::demo {
                               buf,
                               [&] (auto&& path) {
                                   if constexpr (std::is_same_v<std::decay_t<decltype(path)>, packet::Path<State>>) {
-				      double current_cost = path.cost();
-				      std::cerr  << current_cost << ",";
-                          if (added_paths.find(current_cost)  == added_paths.end() || added_paths[current_cost] < 1){
-                            if (added_paths.find(current_cost)  == added_paths.end()){
-                            added_paths[current_cost] = 0;
-                            }
-                            added_paths[current_cost] += 1;
-                            JI_LOG(INFO) << "added path with cost" << current_cost;
-                          }
-                      //planner.addPath(current_cost, path.path());
-				      //else{
-				      //JI_LOG(INFO) << "no added path with cost" << current_cost;
-				      //}
+                                    std::cerr  << path.cost() << ",";
+                                      planner.addPath(path.cost(), path.path());
 
                                       // update our best solution if it has
                                       // the same cost as the solution we
@@ -322,4 +308,3 @@ namespace mpl::demo {
             throw std::invalid_argument("unknown algorithm: " + options.algorithm());
     }
 }
-
