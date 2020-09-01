@@ -174,37 +174,21 @@ namespace mpl::demo {
                           packet::parse(
                               buf,
                               [&] (auto&& path) {
-                                  if constexpr (std::is_same_v<std::decay_t<decltype(path)>, packet::Path<State>>) {
-				      double current_cost = path.cost();
-				      std::cerr  << current_cost << ",";
-                          if (added_paths.find(current_cost)  == added_paths.end() || added_paths[current_cost] < 1000){
-                            if (added_paths.find(current_cost)  == added_paths.end()){
-                            added_paths[current_cost] = 0;
-                            }
-                            added_paths[current_cost] += 1;
-                            JI_LOG(INFO) << "added path with cost" << current_cost;
-                          }
-                      //planner.addPath(current_cost, path.path());
-				      //else{
-				      //JI_LOG(INFO) << "no added path with cost" << current_cost;
-				      //}
+                                    if constexpr (std::is_same_v<std::decay_t<decltype(path)>, packet::Path<State>>) {
+                                        double current_cost = path.cost();
+                                        std::cerr  << current_cost << ",";
+                                        if (added_paths.find(current_cost)  == added_paths.end()){
 
-                                      // update our best solution if it has
-                                      // the same cost as the solution we
-                                      // just got from a peer.  If we have a
-                                      // different solution, then we'll
-                                      // update and send the solution after
-                                      // the comm_.process().  This avoids
-                                      // re-broadcasting the same solution.
-                                      // (It is possible that incorporating
-                                      // the new solution will lower the
-                                      // cost)
-                                      auto newSol = planner.solution();
-                                      if (newSol.cost() == path.cost())
-                                          solution = newSol;
-                                  } else {
-                                      JI_LOG(WARN) << "received invalid path type!";
-                                  }
+                                            added_paths[current_cost] = 0;
+                                            JI_LOG(INFO) << "added path with cost" << current_cost;
+                                            auto newSol = planner.solution();
+                                            if (newSol.cost() == path.cost()){
+                                                solution = newSol;
+                                            }
+                                        }
+                                    } else {
+                                        JI_LOG(WARN) << "received invalid path type!";
+                                    }
                           });
                         }
                     }
