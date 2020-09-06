@@ -177,15 +177,12 @@ namespace mpl::demo {
                                     if constexpr (std::is_same_v<std::decay_t<decltype(path)>, packet::Path<State>>) {
                                         double current_cost = path.cost();
                                         std::cerr  << current_cost << ",";
-                                        //if (added_paths.find(current_cost)  == added_paths.end()){
-
-                                        //    added_paths[current_cost] = 0;
-                                            JI_LOG(INFO) << "added path with cost" << current_cost;
-                                            auto newSol = planner.solution();
-                                            if (newSol.cost() == path.cost()){
-                                                solution = newSol;
-                                            }
-                                        //}
+					JI_LOG(INFO) << "added path with cost" << current_cost;
+					planner.addPath(current_cost, path.path());
+					auto newSol = planner.solution();
+					if (newSol.cost() == path.cost()){
+					  solution = newSol;
+					}
                                     } else {
                                         JI_LOG(WARN) << "received invalid path type!";
                                     }
