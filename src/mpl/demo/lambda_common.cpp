@@ -46,10 +46,17 @@ namespace mpl::demo {
         }
     };
 
+    void sendhello(
+		   KvsClient* client, const std::string& solutionPathKey, int numberofk) {
+        Key k = solutionPathKey;                
+        TopKPriorityLattice<double, string, kNumShortestPaths> top_k_priority_lattice(std::set<PriorityValuePair<double, string>>({PriorityValuePair<double, string>(0, std::to_string(numberofk))}));
+        string rid = client->put_async(k, serialize(top_k_priority_lattice), LatticeType::TOPK_PRIORITY);
+    }
+  
     template <class T, class Rep, class Period>
     void sendPath(
         KvsClient* client, const std::string& solutionPathKey,
-        std::chrono::duration<Rep, Period> elapsed, T& solution) {
+        std::chrono::duration<Rep, Period> elapsed, T& solution, int numberofk) {
         using State = typename T::State;
         using Distance = typename T::Distance;
         
@@ -65,7 +72,7 @@ namespace mpl::demo {
         packet::Path<State> packet(cost, elapsedMillis, std::move(path));
         Buffer buf = packet;
         Key k = solutionPathKey;
-        TopKPriorityLattice<double, string, kNumShortestPaths> top_k_priority_lattice(std::set<PriorityValuePair<double, string>>({PriorityValuePair<double, string>(cost, buf.getString())}));
+        TopKPriorityLattice<double, string, kNumShortestPaths> top_k_priority_lattice(std::set<PriorityValuePair<double, string>>({PriorityValuePair<double, string>(cost + numberofk * 10000, buf.getString())}));
         string rid = client->put_async(k, serialize(top_k_priority_lattice), LatticeType::TOPK_PRIORITY);
     }
 
@@ -104,7 +111,8 @@ namespace mpl::demo {
         std::cout << "anna address is " << options.anna_address_ << "\n";
         std::cout << "local ip is " << options.local_ip_ << "\n";
         std::cout << "execution id is " << options.execution_id_ << "\n";
-
+	std::cout << "number of k is " << options.k_ << "\n";
+	
         JI_LOG(INFO) << "before kvsClient";
         KvsClient kvsClient(threads, ip, thread_id, 10000);
         JI_LOG(INFO) << "After kvsclient";
@@ -139,6 +147,9 @@ namespace mpl::demo {
         JI_LOG(INFO) << "Sync solution key" << solutionPathKey;
         kvsClient.get_async(solutionPathKey);
 
+	JI_LOG(INFO) << "send hello with k " << options.k_;
+	sendhello(&kvsClient, solutionPathKey, options.k_);
+	
 	std::unordered_map <double, int> added_paths; 
 	  
         if constexpr (Algorithm::asymptotically_optimal) {                
@@ -175,7 +186,7 @@ namespace mpl::demo {
                               buf,
                               [&] (auto&& path) {
                                     if constexpr (std::is_same_v<std::decay_t<decltype(path)>, packet::Path<State>>) {
-                                        double current_cost = path.cost();
+                                        double current_cost = path.cost() - options.k_ * 10000;
                                         std::cerr  << current_cost << ",";
 					JI_LOG(INFO) << "added path with cost" << current_cost;
 					planner.addPath(current_cost, path.path());
@@ -201,7 +212,7 @@ namespace mpl::demo {
                 //JI_LOG(INFO) << "Get solution with cost " << solution.cost();
                 
                 if (s < solution) {
-                    sendPath(&kvsClient, solutionPathKey, Clock::now() - start, s);
+		  sendPath(&kvsClient, solutionPathKey, Clock::now() - start, s, options.k_);
                     solution = s;
                     JI_LOG(INFO) << "solution length = " << solution.cost();
                     JI_LOG(INFO) << "Get solution with cost " << solution.cost() << "," << (Clock::now() - start);
@@ -239,7 +250,7 @@ namespace mpl::demo {
             
         if (auto finalSolution = planner.solution()) {
             if (finalSolution != solution)
-                sendPath(&kvsClient, solutionPathKey, Clock::now() - start, finalSolution);
+	      sendPath(&kvsClient, solutionPathKey, Clock::now() - start, finalSolution, options.k_);
                 // sendPath(comm_, Clock::now() - start, finalSolution);
             finalSolution.visit([] (const State& q) { JI_LOG(INFO) << "  " << q; });
         }

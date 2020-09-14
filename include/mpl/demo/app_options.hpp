@@ -135,7 +135,8 @@ namespace mpl::demo {
 	std::string execution_id_;
 		
 	int thread_id_;
-	
+        int k_;
+      
         double timeLimit_{std::numeric_limits<double>::infinity()};
         double checkResolution_{0};
 
