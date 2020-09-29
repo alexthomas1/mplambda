@@ -195,7 +195,7 @@ namespace mpl::demo {
 					  solution = newSol;
 					}
 					//JI_LOG(WARN) << Clock::now() - start; 
-					if( Clock::now() - start < std::chrono::duration_cast<Clock::duration>(std::chrono::duration<double>(4))){
+					if( Clock::now() - start < std::chrono::duration_cast<Clock::duration>(std::chrono::duration<double>(5))){
 					  JI_LOG(INFO) << "broken";
 					  should_break = 1;
 					}
