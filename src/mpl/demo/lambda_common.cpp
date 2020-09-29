@@ -180,7 +180,7 @@ namespace mpl::demo {
                         
 
                         for (const auto& pv : top_k_priority_lattice.reveal()) {
-                          
+                          bool should_break = 0;
                           Buffer buf(pv.value);
                           packet::parse(
                               buf,
@@ -194,10 +194,18 @@ namespace mpl::demo {
 					if (newSol.cost() == path.cost()){
 					  solution = newSol;
 					}
+					//JI_LOG(WARN) << Clock::now() - start; 
+					if( Clock::now() - start < std::chrono::duration_cast<Clock::duration>(std::chrono::duration<double>(4))){
+					  JI_LOG(INFO) << "broken";
+					  should_break = 1;
+					}
                                     } else {
                                         JI_LOG(WARN) << "received invalid path type!";
                                     }
                           });
+			  if (should_break){
+			    break;
+			  }
                         }
                     }
                     
