@@ -203,7 +203,7 @@ namespace mpl::demo {
                                         JI_LOG(WARN) << "received invalid path type!";
                                     }
                           });
-			  if (should_break){
+			  if (0){
 			    break;
 			  }
                         }
