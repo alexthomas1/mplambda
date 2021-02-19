@@ -22,7 +22,7 @@ endif()
 #########
 
 find_package(OpenMP REQUIRED)
-find_package(Assimp REQUIRED)
+find_package(assimp REQUIRED)
 find_package(Threads)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
