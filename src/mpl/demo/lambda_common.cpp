@@ -142,7 +142,7 @@ namespace mpl::demo {
                 if (maxElapsedSolveTime.count() > 0 && Clock::now() - start > maxElapsedSolveTime)
                     return true;
                 comm_.process();
-                return comm_.isDone() || planner.isSolved();
+                return comm_.isDone() && planner.isSolved();
             });
         }
             
