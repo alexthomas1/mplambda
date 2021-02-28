@@ -1,0 +1,20 @@
+loader.preload = "file:${GRAPHENEDIR}/LibOS/shim/src/libsysdb.so"
+loader.env.LD_LIBRARY_PATH = "/lib:/lib/x86_64-linux-gnu:/usr//lib/x86_64-linux-gnu"
+
+libos.entrypoint = "file:mpl_coordinator"
+#loader.log_level = "debug"
+
+fs.mount.graphene_lib.type = "chroot"
+fs.mount.graphene_lib.path = "/lib"
+fs.mount.graphene_lib.uri = "file:${GRAPHENEDIR}/Runtime"
+
+fs.mount.host_lib.type = "chroot"
+fs.mount.host_lib.path = "/lib/x86_64-linux-gnu"
+fs.mount.host_lib.uri = "file:/lib/x86_64-linux-gnu"
+
+fs.mount.usr.type = "chroot"
+fs.mount.usr.path = "/usr"
+fs.mount.usr.uri = "file:/usr"
+
+loader.insecure__use_cmdline_argv = 1
+

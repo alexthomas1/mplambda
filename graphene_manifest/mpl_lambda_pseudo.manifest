@@ -1,0 +1,29 @@
+#Loads the shim (intercepts and redirects syscalls) for LibOS
+loader.preload = "file:${GRAPHENEDIR}/Runtime/libsysdb.so"
+
+#Sets the path so the dynamic linker can find shared libraries 
+loader.env.LD_LIBRARY_PATH = "/lib:/lib/x86_64-linux-gnu:/usr//lib/x86_64-linux-gnu"
+
+#Sets first executable to run 
+libos.entrypoint = "file:mpl_lambda_pseudo"
+#loader.log_level = "debug"
+
+fs.mount.graphene_lib.type = "chroot"
+fs.mount.graphene_lib.path = "/lib"
+fs.mount.graphene_lib.uri = "file:${GRAPHENEDIR}/Runtime"
+
+fs.mount.host_lib.type = "chroot"
+fs.mount.host_lib.path = "/lib/x86_64-linux-gnu"
+fs.mount.host_lib.uri = "file:/lib/x86_64-linux-gnu"
+
+fs.mount.usr.type = "chroot"
+fs.mount.usr.path = "/usr"
+fs.mount.usr.uri = "file:/usr"
+
+# /etc
+fs.mount.etc.type = "chroot"
+fs.mount.etc.path = "/etc"
+fs.mount.etc.uri = "file:/etc"
+
+loader.insecure__use_cmdline_argv = 1
+

@@ -32,6 +32,26 @@ if (OPENMP_FOUND)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
 
+#Find GRAPHENE
+if (GRAPHENEDIR)
+    #Create symlink to PAL loader 
+    execute_process ( COMMAND cmake -E create_symlink
+        "${GRAPHENEDIR}/Runtime/pal_loader"
+        "pal_loader"
+    )
+
+    file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/graphene_manifest/
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
+
+    file(GLOB g_manifest "${CMAKE_CURRENT_SOURCE_DIR}/graphene_manifest/*.manifest")
+    foreach(filename ${g_manifest})
+        message( ${filename} )
+        get_filename_component(ITEM_PATH ${filename} NAME)
+        message( ${ITEM_PATH} )
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/graphene_manifest/${ITEM_PATH} ${CMAKE_CURRENT_BINARY_DIR}/${ITEM_PATH})
+    endforeach()
+endif()
+
 if (${APPLE})
     add_executable(mpl_coordinator src/mpl_coordinator.cpp src/mpl/write_queue.cpp)
     # target_link_libraries(mpl_coordinator Threads::Threads)
